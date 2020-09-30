@@ -3,10 +3,12 @@ import numpy as np
 import util
 
 img = cv2.imread("Resources/Images/david.jpg")
+ado = cv2.imread("Resources/Images/ado.jpg")
 canny = cv2.Canny(img, 80, 120)
 kernel = np.ones((2, 2), np.uint8)
 
 half_size = util.resize_dimension(img, 50)
+half_ado = util.resize_dimension(ado, 50)
 quarter_size = util.resize_dimension(img, 25)
 bloated = util.resize_dimension(img, 150)
 
@@ -22,3 +24,5 @@ while not util.is_exit_key_pressed():
     cv2.imshow("Quarter", cv2.resize(img, quarter_size))
     cv2.imshow("Bloated", cv2.resize(img, bloated))
     cv2.imshow("Cropped", img[0:100, 20:120])
+    cv2.imshow("ADO", cv2.resize(ado, half_ado))
+
