@@ -18,6 +18,7 @@ cv2.circle(meh_face, (250, 200), 28, meh_color, -1)
 cv2.circle(meh_face, (350, 200), 28, meh_color, -1)
 cv2.circle(meh_face, (300, 280), 15, meh_color, -1)
 cv2.line(meh_face, (250, 350), (350, 350), meh_color, 6)
+cv2.putText(meh_face, "meh", (230, 480), cv2.FONT_HERSHEY_COMPLEX, 1.8, meh_color, 2)
 
 while not util.is_exit_key_pressed():
     cv2.imshow("Black Square", square)
