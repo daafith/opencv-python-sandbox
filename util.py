@@ -10,9 +10,9 @@ def is_exit_key_pressed(delay=1):
     return cv2.waitKey(delay) & 0XFF == ord('q')
 
 
-def resize_dimension(image, percentage) -> tuple:
+def resize_image(image, percentage):
     """
-    Gives a resized image dimension (width, height). Not exactly precise, but good enough
+    Returns a resized image. Not exactly precise, but good enough
     :param image:
     :param percentage: anything greater than 0
     :return:
@@ -20,4 +20,5 @@ def resize_dimension(image, percentage) -> tuple:
     if percentage <= 0:
         raise Exception("A percentage must be greater than  0")
     divisor = 100 / percentage
-    return int(image.shape[1] / divisor), int(image.shape[0] / divisor)
+    dimension = int(image.shape[1] / divisor), int(image.shape[0] / divisor)
+    return cv2.resize(image, dimension)
