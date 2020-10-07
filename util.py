@@ -35,10 +35,9 @@ def stack_images(img_array, scale=1):
     :param img_array:
     :return:
     """
-    first_row = img_array[0]
-    has_columns = isinstance(first_row, list)
-    if has_columns:
-        stack = _process_columns(img_array, scale)
+    has_rows = isinstance(img_array[0], list)
+    if has_rows:
+        stack = _process_rows(img_array, scale)
     else:
         stack = _process_single_row(img_array, scale)
     return stack
@@ -56,7 +55,7 @@ def _process_single_row(img_array, scale):
     return np.hstack(img_array)
 
 
-def _process_columns(img_array, scale):
+def _process_rows(img_array, scale):
     first_row = img_array[0]
     columns = len(first_row)
     width = first_row[0].shape[1]
@@ -70,8 +69,8 @@ def _process_columns(img_array, scale):
                 img_array[x][y] = cv2.resize(img_array[x][y], (first_row[0].shape[1], first_row[0].shape[0]),
                                              None, scale, scale)
             if len(img_array[x][y].shape) == 2: img_array[x][y] = cv2.cvtColor(img_array[x][y], cv2.COLOR_GRAY2BGR)
-    image_blank = np.zeros((height, width, 3), np.uint8)
-    hor = [image_blank] * rows
+    blank_image = np.zeros((height, width, 3), np.uint8)
+    hor = [blank_image] * rows
     for x in range(0, rows):
         hor[x] = np.hstack(img_array[x])
     return np.vstack(hor)
