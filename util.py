@@ -26,34 +26,52 @@ def resize_image(image, percentage):
 
 
 # Copy pasted this from GitHub, may refactor it later
-def stack_images(scale, img_array):
-    rows = len(img_array)
-    cols = len(img_array[0])
-    rows_available = isinstance(img_array[0], list)
-    width = img_array[0][0].shape[1]
-    height = img_array[0][0].shape[0]
-    if rows_available:
-        for x in range(0, rows):
-            for y in range(0, cols):
-                if img_array[x][y].shape[:2] == img_array[0][0].shape[:2]:
-                    img_array[x][y] = cv2.resize(img_array[x][y], (0, 0), None, scale, scale)
-                else:
-                    img_array[x][y] = cv2.resize(img_array[x][y], (img_array[0][0].shape[1], img_array[0][0].shape[0]),
-                                                 None, scale, scale)
-                if len(img_array[x][y].shape) == 2: img_array[x][y] = cv2.cvtColor(img_array[x][y], cv2.COLOR_GRAY2BGR)
-        image_blank = np.zeros((height, width, 3), np.uint8)
-        hor = [image_blank] * rows
-        hor_con = [image_blank] * rows
-        for x in range(0, rows):
-            hor[x] = np.hstack(img_array[x])
-        ver = np.vstack(hor)
+def stack_images(img_array, scale=1):
+    """
+    Stacks (and optionally scales) images and accepts varying color settings (unlike normal hstack or vstack).
+    To create a grid, pass an array or arrays --> stack_images(([car, boat], [bike, skates]), 0.8)
+    To create a single row, pass an array --> stack_images(([car, boat, bike, skates]), 0.8)
+    :param scale: Optional scale setting, for instance 0.8 = 80%
+    :param img_array:
+    :return:
+    """
+    first_row = img_array[0]
+    has_columns = isinstance(first_row, list)
+    if has_columns:
+        stack = _process_columns(img_array, scale)
     else:
-        for x in range(0, rows):
-            if img_array[x].shape[:2] == img_array[0].shape[:2]:
-                img_array[x] = cv2.resize(img_array[x], (0, 0), None, scale, scale)
+        stack = _process_single_row(img_array, scale)
+    return stack
+
+
+def _process_single_row(img_array, scale):
+    first_row = img_array[0]
+    for x in range(0, len(img_array)):
+        if img_array[x].shape[:2] == first_row.shape[:2]:
+            img_array[x] = cv2.resize(img_array[x], (0, 0), None, scale, scale)
+        else:
+            img_array[x] = cv2.resize(img_array[x], (first_row.shape[1], first_row.shape[0]), None, scale, scale)
+        if len(img_array[x].shape) == 2:
+            img_array[x] = cv2.cvtColor(img_array[x], cv2.COLOR_GRAY2BGR)
+    return np.hstack(img_array)
+
+
+def _process_columns(img_array, scale):
+    first_row = img_array[0]
+    columns = len(first_row)
+    width = first_row[0].shape[1]
+    height = first_row[0].shape[0]
+    rows = len(img_array)
+    for x in range(0, rows):
+        for y in range(0, columns):
+            if img_array[x][y].shape[:2] == first_row[0].shape[:2]:
+                img_array[x][y] = cv2.resize(img_array[x][y], (0, 0), None, scale, scale)
             else:
-                img_array[x] = cv2.resize(img_array[x], (img_array[0].shape[1], img_array[0].shape[0]), None, scale, scale)
-            if len(img_array[x].shape) == 2: img_array[x] = cv2.cvtColor(img_array[x], cv2.COLOR_GRAY2BGR)
-        hor = np.hstack(img_array)
-        ver = hor
-    return ver
+                img_array[x][y] = cv2.resize(img_array[x][y], (first_row[0].shape[1], first_row[0].shape[0]),
+                                             None, scale, scale)
+            if len(img_array[x][y].shape) == 2: img_array[x][y] = cv2.cvtColor(img_array[x][y], cv2.COLOR_GRAY2BGR)
+    image_blank = np.zeros((height, width, 3), np.uint8)
+    hor = [image_blank] * rows
+    for x in range(0, rows):
+        hor[x] = np.hstack(img_array[x])
+    return np.vstack(hor)

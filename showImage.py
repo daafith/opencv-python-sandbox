@@ -23,7 +23,7 @@ while not util.is_exit_key_pressed():
     cv2.imshow("David", img)
     cv2.imshow("H-Stacked", hor)
     cv2.imshow("V-Stacked", vert)
-    cv2.imshow("Custom Stack", util.stack_images(0.8, ([canny, cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)], [img, eroded])))
+    cv2.imshow("Custom Stack", util.stack_images(([canny, cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)], [img, eroded]), 0.8))
     cv2.imshow("Dilated", cv2.dilate(canny, kernel, iterations=1))
     cv2.imshow("Half", half_size_face)
     cv2.imshow("Quarter", quarter_size_face)
