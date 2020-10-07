@@ -30,7 +30,7 @@ def stack_images(img_array, scale=1):
     """
     Stacks (and optionally scales) images and accepts varying color settings (unlike normal hstack or vstack).
     To create a grid, pass an array or arrays --> stack_images(([car, boat], [bike, skates]), 0.8)
-    To create a single row, pass an array --> stack_images(([car, boat, bike, skates]), 0.8)
+    To create a single row, pass an array --> stack_images([car, boat, bike, skates], 0.8)
     :param scale: Optional scale setting, for instance 0.8 = 80%
     :param img_array:
     :return:
