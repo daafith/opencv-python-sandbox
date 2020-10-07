@@ -9,7 +9,6 @@ GREEN = 0, 255, 0
 BLACK = 0, 0, 0
 # A lower percentage results in more approximation points
 APPROXIMATION_PERCENTAGE = 0.02
-SHAPES = {3: "Triangle", 4: "Square", 8: "Circle"}
 
 shapes = cv2.imread("Resources/Images/shapes.png")
 shapes_gray = cv2.cvtColor(shapes, cv2.COLOR_BGR2GRAY)
@@ -33,26 +32,30 @@ def determine_shapes(img):
 
             x, y, w, h = cv2.boundingRect(approximate_points)
             cv2.rectangle(copy, (x, y), (x + w, y + h), GREEN, 2)
-            number_of_points = len(approximate_points)
 
-            if number_of_points == 3:
-                name = "Triangle"
-            elif number_of_points == 4:
-                aspect_ratio = w / float(h)
-                if 0.98 < aspect_ratio < 1.03:
-                    name = "Square"
-                else:
-                    name = "Rectangle"
-            elif number_of_points > 4:
-                name = "Circle"
-            else:
-                name = "Shapeless"
-
-            cv2.putText(copy, name, (x + (w // 2) - 20, y + (h // 2) - 10), cv2.FONT_HERSHEY_COMPLEX, 0.65,
+            cv2.putText(copy, define_shape_name(approximate_points, h, w), (x + (w // 2) - 40, y + (h // 2) - 10),
+                        cv2.FONT_HERSHEY_COMPLEX, 0.65,
                         BLACK, 2)
     return copy
 
 
-cv2.imshow("Foo", util.stack_images(([shapes, shapes_gray, shapes_gray_blurred],
+def define_shape_name(approximate_points, h, w):
+    number_of_points = len(approximate_points)
+    if number_of_points == 3:
+        name = "Triangle"
+    elif number_of_points == 4:
+        aspect_ratio = w / float(h)
+        if 0.98 < aspect_ratio < 1.03:
+            name = "Square"
+        else:
+            name = "Rectangle"
+    elif 4 < number_of_points <= 8:
+        name = "Circle"
+    else:
+        name = "Unknown"
+    return name
+
+
+cv2.imshow("Shape detection", util.stack_images(([shapes, shapes_gray, shapes_gray_blurred],
                                      [shapes_canny, determine_shapes(shapes), blank_image]), 0.85))
 cv2.waitKey(0)

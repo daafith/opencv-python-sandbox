@@ -25,7 +25,6 @@ def resize_image(image, percentage):
     return cv2.resize(image, dimension)
 
 
-# Copy pasted this from GitHub, may refactor it later
 def stack_images(img_array, scale=1):
     """
     Stacks (and optionally scales) images and accepts varying color settings (unlike normal hstack or vstack).
@@ -58,8 +57,6 @@ def _process_single_row(img_array, scale):
 def _process_rows(img_array, scale):
     first_row = img_array[0]
     columns = len(first_row)
-    width = first_row[0].shape[1]
-    height = first_row[0].shape[0]
     rows = len(img_array)
     for x in range(0, rows):
         for y in range(0, columns):
@@ -68,7 +65,10 @@ def _process_rows(img_array, scale):
             else:
                 img_array[x][y] = cv2.resize(img_array[x][y], (first_row[0].shape[1], first_row[0].shape[0]),
                                              None, scale, scale)
-            if len(img_array[x][y].shape) == 2: img_array[x][y] = cv2.cvtColor(img_array[x][y], cv2.COLOR_GRAY2BGR)
+            if len(img_array[x][y].shape) == 2:
+                img_array[x][y] = cv2.cvtColor(img_array[x][y], cv2.COLOR_GRAY2BGR)
+    width = first_row[0].shape[1]
+    height = first_row[0].shape[0]
     blank_image = np.zeros((height, width, 3), np.uint8)
     hor = [blank_image] * rows
     for x in range(0, rows):

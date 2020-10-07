@@ -42,6 +42,6 @@ while not util.is_exit_key_pressed():
     mask = cv2.inRange(hsv_image, lower_bound, upper_bound)
     result = cv2.bitwise_and(car, car, mask=mask)
 
-    cv2.imshow("Combined", util.stack_images(([car, hsv_image], [mask, result])))
+    cv2.imshow("Detect color", util.stack_images(([car, hsv_image], [mask, result])))
 
 
